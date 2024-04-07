@@ -1,0 +1,118 @@
+{% extends "base.html" %}
+{% block title %}Patients{% endblock %}
+
+{% block content %}
+<div style="margin-bottom: 30px;"></div>
+<h1 align="center">Patients Management</h1>
+<div style="margin-bottom: 30px;"></div>
+<div align="center">
+    <button class="button" onclick="toggleTable()">Display All Patients</button>
+</div>
+<div style="margin-bottom: 30px;"></div>
+<div class="section" id="tableSection" style="display: none;">
+    <table border="1">
+        <thead>
+            <tr>
+                <th>First Name</th>
+                <th>Last Name</th>
+                <th>Email</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for patient in patient %}
+            <tr>
+                <td>{{ patient.first_name }}</td>
+                <td>{{ patient.last_name }}</td>
+                <td>{{ patient.email }}</td>
+                <td>
+                    <button class="btn btn-primary" onclick="toggleUpdateForm({{ patient.id }})">Update</button>
+                    <form method="POST" style="display: inline;">
+                        <input type="hidden" name="action" value="delete_patient">
+                        <input type="hidden" name="patient_id" value="{{ patient.id }}">
+                        <button type="submit" class="btn btn-danger">Delete</button>
+                    </form>
+                    <button class="btn btn-primary" onclick="toggleAssignDoctorForm({{ patient.id }})">Assign Doctor</button>
+                    <button class="btn btn-primary" onclick="toggleAssignAssistantForm({{ patient.id }})">Assign Assistant</button>
+                    <form method="POST" style="display: none;" id="assignDoctorForm{{ patient.id }}">
+                        <input type="hidden" name="action" value="assign_doctor">
+                        <input type="text" name="doctor_first_name" placeholder="Doctor's First Name">
+                        <input type="text" name="doctor_last_name" placeholder="Doctor's Last Name">
+                        <input type="hidden" name="patient_id" value="{{ patient.id }}">
+                        <button type="submit" class="btn btn-primary">Assign Doctor</button>
+                        <button type="button" class="btn btn-secondary" onclick="toggleAssignDoctorForm({{ patient.id }})">Cancel</button>
+                    </form>
+                    <form method="POST" style="display: none;" id="assignAssistantForm{{ patient.id }}">
+                        <input type="hidden" name="action" value="assign_assistant">
+                        <input type="text" name="assistant_first_name" placeholder="Assistant's First Name">
+                        <input type="text" name="assistant_last_name" placeholder="Assistant's Last Name">
+                        <input type="hidden" name="patient_id" value="{{ patient.id }}">
+                        <button type="submit" class="btn btn-primary">Assign Assistant</button>
+                        <button type="button" class="btn btn-secondary" onclick="toggleAssignAssistantForm({{ patient.id }})">Cancel</button>
+                    </form>
+                </td>
+            </tr>
+            <tr id="updateFormRow{{ patient.id }}" style="display: none;">
+                <td colspan="4">
+                    <form method="POST">
+                        <input type="hidden" name="action" value="update_patient">
+                        <input type="hidden" name="patient_id" value="{{ patient.id }}">
+                        <div class="form-group">
+                            <label for="newEmail{{ patient.id }}">New Email Address</label>
+                            <input type="email" class="form-control" id="newEmail{{ patient.id }}" name="newEmail" placeholder="Enter new email" />
+                        </div>
+                        <div class="form-group">
+                            <label for="newFirstName{{ patient.id }}">New First Name</label>
+                            <input type="text" class="form-control" id="newFirstName{{ patient.id }}" name="newFirstName" placeholder="Enter new first name" />
+                        </div>
+                        <div class="form-group">
+                            <label for="newLastName{{ patient.id }}">New Last Name</label>
+                            <input type="text" class="form-control" id="newLastName{{ patient.id }}" name="newLastName" placeholder="Enter new last name" />
+                        </div>
+                        <button type="submit" class="btn btn-primary">Update</button>
+                        <button type="button" class="btn btn-secondary" onclick="toggleUpdateForm({{ patient.id }})">Cancel</button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+<div style="margin-bottom: 30px;"></div>
+<div align="center">
+    <button class="button" onclick="toggleForm()">Add Patient</button>
+</div>
+<div style="margin-bottom: 30px;"></div>
+<div class="section" id="addFormSection" style="display: none;">
+    <form method="POST">
+        <input type="hidden" name="action" value="add_patient">
+        <div class="form-group">
+            <label for="email">Email Address</label>
+            <input type="email" class="form-control" id="email" name="email" placeholder="Enter email" />
+        </div>
+        <div class="form-group">
+            <label for="firstName">First Name</label>
+            <input type="text" class="form-control" id="firstName" name="firstName" placeholder="Enter First Name" />
+        </div>
+        <div class="form-group">
+            <label for="lastName">Last Name</label>
+            <input type="text" class="form-control" id="lastName" name="lastName" placeholder="Enter Last Name" />
+        </div>
+        <br />
+        <div align="center">
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </div>
+    </form>
+</div>
+
+<script>
+    function toggleAssignAssistantForm(patientId) {
+        var form = document.getElementById("assignAssistantForm" + patientId);
+        if (form.style.display === "none" || form.style.display === "") {
+            form.style.display = "block";
+        } else {
+            form.style.display = "none";
+        }
+    }
+</script>
+{% endblock %}

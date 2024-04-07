@@ -1,0 +1,97 @@
+{% extends "base.html" %}
+{% block title %}Assistants{% endblock %}
+
+{% block content %}
+<div style="margin-bottom: 30px;"></div>
+<h1 align="center">Assistants Management</h1>
+<div style="margin-bottom: 30px;"></div>
+<div align="center">
+    <button class="button" onclick="toggleTable()">Display All Assistants</button>
+</div>
+<div style="margin-bottom: 30px;"></div>
+<div class="section" id="tableSection" style="display: none;">
+    <table border="1">
+        <thead>
+            <tr>
+                <th>First Name</th>
+                <th>Last Name</th>
+                <th>Email</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for assistant in assistant %}
+            <tr>
+                <td>{{ assistant.first_name }}</td>
+                <td>{{ assistant.last_name }}</td>
+                <td>{{ assistant.email }}</td>
+                <td>
+                    <button class="btn btn-primary" onclick="toggleAUpdateForm({{ assistant.id }})">Update</button>
+                    <form method="POST" style="display: inline;">
+                        <input type="hidden" name="action" value="delete_assistant">
+                        <input type="hidden" name="assistant_id" value="{{ assistant.id }}">
+                        <button type="submit" class="btn btn-danger">Delete</button>
+                    </form>
+                </td>
+            </tr>
+            <tr id="updateFormRow{{ assistant.id }}" style="display: none;">
+                <td colspan="4">
+                    <form method="POST">
+                        <input type="hidden" name="action" value="update_assistant">
+                        <input type="hidden" name="assistant_id" value="{{ assistant.id }}">
+                        <div class="form-group">
+                            <label for="newEmail{{ assistant.id }}">New Email Address</label>
+                            <input type="email" class="form-control" id="newEmail{{ assistant.id }}" name="newEmail" placeholder="Enter new email" />
+                        </div>
+                        <div class="form-group">
+                            <label for="newFirstName{{ assistant.id }}">New First Name</label>
+                            <input type="text" class="form-control" id="newFirstName{{ assistant.id }}" name="newFirstName" placeholder="Enter new first name" />
+                        </div>
+                        <div class="form-group">
+                            <label for="newLastName{{ assistant.id }}">New Last Name</label>
+                            <input type="text" class="form-control" id="newLastName{{ assistant.id }}" name="newLastName" placeholder="Enter new last name" />
+                        </div>
+                        <button type="submit" class="btn btn-primary">Update</button>
+                        <button type="button" class="btn btn-secondary" onclick="toggleAUpdateForm({{ assistant.id }})">Cancel</button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+<div style="margin-bottom: 30px;"></div>
+<div align="center">
+    <button class="button" onclick="toggleForm()">Add Assistant</button>
+</div>
+<div style="margin-bottom: 30px;"></div>
+<div class="section" id="addFormSection" style="display: none;">
+    <form method="POST">
+        <input type="hidden" name="action" value="add_assistant">
+        <div class="form-group">
+            <label for="email">Email Address</label>
+            <input type="email" class="form-control" id="email" name="email" placeholder="Enter email" />
+        </div>
+        <div class="form-group">
+            <label for="firstName">First Name</label>
+            <input type="text" class="form-control" id="firstName" name="firstName" placeholder="Enter First Name" />
+        </div>
+        <div class="form-group">
+            <label for="lastName">Last Name</label>
+            <input type="text" class="form-control" id="lastName" name="lastName" placeholder="Enter Last Name" />
+        </div>
+        <div class="form-group">
+            <label for="password1">Password</label>
+            <input type="password" class="form-control" id="password1" name="password1" placeholder="Enter password" />
+        </div>
+        <div class="form-group">
+            <label for="password2">Password (Confirm)</label>
+            <input type="password" class="form-control" id="password2" name="password2" placeholder="Confirm password" />
+        </div>
+        <br />
+        <div align="center">
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </div>
+    </form>
+</div>
+{% endblock %}

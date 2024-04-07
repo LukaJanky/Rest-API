@@ -1,0 +1,143 @@
+{% extends "base.html" %}
+{% block title %}Doctors{% endblock %}
+
+{% block content %}
+<div style="margin-bottom: 30px;"></div>
+<h1 align="center">Doctors Management</h1>
+<div style="margin-bottom: 30px;"></div>
+<div align="center">
+    <button class="button" onclick="toggleTable()">Display All Doctors</button>
+</div>
+<div style="margin-bottom: 30px;"></div>
+<div class="section" id="tableSection" style="display: none;">
+    <table border="1">
+        <thead>
+            <tr>
+                <th>First Name</th>
+                <th>Last Name</th>
+                <th>Email</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for doctor in doctor %}
+            <tr>
+                <td>{{ doctor.first_name }}</td>
+                <td>{{ doctor.last_name }}</td>
+                <td>{{ doctor.email }}</td>
+                <td>
+                    <button class="btn btn-primary" onclick="toggleDUpdateForm({{ doctor.id }})">Update</button>
+                    <form method="POST" style="display: inline;">
+                        <input type="hidden" name="action" value="delete_doctor">
+                        <input type="hidden" name="doctor_id" value="{{ doctor.id }}">
+                        <button type="submit" class="btn btn-danger">Delete</button>
+                    </form>
+                </td>
+            </tr>
+            <tr id="updateFormRow{{ doctor.id }}" style="display: none;">
+                <td colspan="4">
+                    <form method="POST">
+                        <input type="hidden" name="action" value="update_doctor">
+                        <input type="hidden" name="doctor_id" value="{{ doctor.id }}">
+                        <div class="form-group">
+                            <label for="newEmail{{ doctor.id }}">New Email Address</label>
+                            <input type="email" class="form-control" id="newEmail{{ doctor.id }}" name="newEmail" placeholder="Enter new email" />
+                        </div>
+                        <div class="form-group">
+                            <label for="newFirstName{{ doctor.id }}">New First Name</label>
+                            <input type="text" class="form-control" id="newFirstName{{ doctor.id }}" name="newFirstName" placeholder="Enter new first name" />
+                        </div>
+                        <div class="form-group">
+                            <label for="newLastName{{ doctor.id }}">New Last Name</label>
+                            <input type="text" class="form-control" id="newLastName{{ doctor.id }}" name="newLastName" placeholder="Enter new last name" />
+                        </div>
+                        <button type="submit" class="btn btn-primary">Update</button>
+                        <button type="button" class="btn btn-secondary" onclick="toggleDUpdateForm({{ doctor.id }})">Cancel</button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+<div style="margin-bottom: 30px;"></div>
+<div align="center">
+    <button class="button" onclick="toggleForm()">Add Doctor</button>
+</div>
+<div style="margin-bottom: 30px;"></div>
+<div class="section" id="addFormSection" style="display: none;">
+    <form method="POST">
+        <input type="hidden" name="action" value="add_doctor">
+        <div class="form-group">
+            <label for="email">Email Address</label>
+            <input type="email" class="form-control" id="email" name="email" placeholder="Enter email" />
+        </div>
+        <div class="form-group">
+            <label for="firstName">First Name</label>
+            <input type="text" class="form-control" id="firstName" name="firstName" placeholder="Enter First Name" />
+        </div>
+        <div class="form-group">
+            <label for="lastName">Last Name</label>
+            <input type="text" class="form-control" id="lastName" name="lastName" placeholder="Enter Last Name" />
+        </div>
+        <div class="form-group">
+            <label for="password1">Password</label>
+            <input type="password" class="form-control" id="password1" name="password1" placeholder="Enter password" />
+        </div>
+        <div class="form-group">
+            <label for="password2">Password (Confirm)</label>
+            <input type="password" class="form-control" id="password2" name="password2" placeholder="Confirm password" />
+        </div>
+        <br />
+        <div align="center">
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </div>
+    </form>
+</div>
+
+<!-- Report Section -->
+<div id="doctorsReportSection" style="display: none;">
+    <div style="margin-bottom: 30px;"></div>
+    <div align="center">
+        <h2>Doctors with Patients</h2>
+        <table border="1">
+            <thead>
+                <tr>
+                    <th>Doctor</th>
+                    <th>Patients</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for doctor, patients in report['doctors_with_patients'].items() %}
+                <tr>
+                    <td>{{ doctor }}</td>
+                    <td>
+                        {% if patients %}
+                        <ul>
+                            {% for patient in patients %}
+                            <li>{{ patient }}</li>
+                            {% endfor %}
+                        </ul>
+                        {% else %}
+                        No patients
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <div style="margin-bottom: 30px;"></div>
+    <div style="margin-top: 30px;" align="center">
+        <h2>Statistics</h2>
+        <p>Total Doctors: {{ report['statistics']['total_doctors'] }}</p>
+        <p>Total Patients: {{ report['statistics']['total_patients'] }}</p>
+    </div>
+</div>
+
+<!-- Toggle Report Button -->
+<div align="center">
+    <button class="button" onclick="toggleReport()">Doctors Report</button>
+</div>
+
+{% endblock %}

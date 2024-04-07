@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial scale=1" />
+        <link
+            rel="stylesheet"
+            href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+            integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh"
+            crossorigin="anonymous"
+        />
+        <link
+            rel="stylesheet"
+            href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"
+            crossorigin="anonymous"
+        />
+        <title>{% block title %}Home{% endblock %}</title>
+        <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 8px;
+            border: 1px solid #dddddd;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+    </style>
+    </head>
+    <body>
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+            <button
+                class="navbar-toggler"
+                type="button"
+                data-toggle="collapse"
+                data-target="#navbar"
+            >
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbar">
+                <div class="navbar-nav">
+                    {% if user.is_authenticated %}
+                    <a class="nav-item nav-link" id="home" href="/">Home</a>
+                    <a class="nav-item nav-link" id="treatments" href="/treatments">Treatments</a>
+                    <a class="nav-item nav-link" id="doctors" href="/doctors">Doctors</a>
+                    <a class="nav-item nav-link" id="assistants" href="/assistants">Assistants</a>
+                    <a class="nav-item nav-link" id="patients" href="/patients">Patients</a>
+                    <a class="nav-item nav-link" id="logout" href="/logout">Logout</a>
+                    {% else %}
+                    <a class="nav-item nav-link" id="login" href="/login">Login</a>
+                    <a class="nav-item nav-link" id="signUp" href="/sign-up">Sign Up</a>
+                    {% endif %}
+                </div>
+            </div>
+        </nav>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                {% if category == 'error' %}
+                <div class="alert alert-danger alter-dismissable fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="close" data-dismiss="alert">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                {% else %}
+                <div class="alert alert-success alter-dismissable fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="close" data-dismiss="alert">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                {% endif %}
+            {% endfor %}
+        {% endif %}
+        {% endwith %}
+
+        <div class="container">{% block content %} {% endblock %}</div>
+        <script
+            src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+            integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+            crossorigin="anonymous"
+        ></script>
+        <script
+            src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+            integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+            crossorigin="anonymous"
+        ></script>
+        <script
+            src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+            integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+            crossorigin="anonymous"
+        ></script>
+
+    {% block javascript %}
+        <script type="text/javascript">
+            function deleteTreatment(treatmentId) {
+        fetch("/delete-treatment", {
+            method: "POST",
+            body: JSON.stringify({ treatmentId: treatmentId }),
+        }).then((_res) => {
+            window.location.href = "/";
+        });
+        }
+    </script>
+    <script>
+    function toggleTable() {
+        var tableSection = document.getElementById("tableSection");
+        if (tableSection.style.display === "none") {
+            tableSection.style.display = "block"; // Show the section
+        } else {
+            tableSection.style.display = "none"; // Hide the section
+        }
+    }
+    function toggleForm() {
+    var formSection = document.getElementById("addFormSection");
+    if (formSection.style.display === "none") {
+        formSection.style.display = "block";
+    } else {
+        formSection.style.display = "none";
+    }
+}
+
+function toggleUpdateForm(patientId) {
+    var updateFormRow = document.getElementById('updateFormRow' + patientId);
+    if (updateFormRow.style.display === "none") {
+        updateFormRow.style.display = "table-row";
+    } else {
+        updateFormRow.style.display = "none";
+    }
+}
+function toggleAUpdateForm(assistantId) {
+    var updateFormRow = document.getElementById('updateFormRow' + assistantId);
+    if (updateFormRow.style.display === "none") {
+        updateFormRow.style.display = "table-row";
+    } else {
+        updateFormRow.style.display = "none";
+    }
+}
+function toggleDUpdateForm(doctorId) {
+    var updateFormRow = document.getElementById('updateFormRow' + doctorId);
+    if (updateFormRow.style.display === "none") {
+        updateFormRow.style.display = "table-row";
+    } else {
+        updateFormRow.style.display = "none";
+    }
+}
+function toggleTUpdateForm(treatmentId) {
+    var updateFormRow = document.getElementById("updateFormRow" + treatmentId);
+    if (updateFormRow.style.display === "none") {
+        updateFormRow.style.display = "table-row";
+    } else {
+        updateFormRow.style.display = "none";
+    }
+}
+    function toggleAssignDoctorForm(patientId) {
+        var assignDoctorForm = document.getElementById("assignDoctorForm" + patientId);
+        if (assignDoctorForm.style.display === "none") {
+            assignDoctorForm.style.display = "block";
+        } else {
+            assignDoctorForm.style.display = "none";
+        }
+    }
+    function toggleReport() {
+        var reportSection = document.getElementById("doctorsReportSection");
+        if (reportSection.style.display === "none" || reportSection.style.display === "") {
+            reportSection.style.display = "block";
+        } else {
+            reportSection.style.display = "none";
+        }
+    }
+    // Function to fetch and display the report data
+    function fetchReport() {
+        fetch("/doctors", {
+            method: "POST"
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error("Failed to fetch report");
+            }
+            return response.json();
+        })
+        .then(data => {
+            // Display the report data in the reportContent pre element
+            var reportContent = document.getElementById("reportContent");
+            reportContent.textContent = JSON.stringify(data, null, 2);
+        })
+        .catch(error => {
+            console.error("Error fetching report:", error);
+        });
+    }
+    </script>
+
+    {% endblock %}
+    </body>
+</html>

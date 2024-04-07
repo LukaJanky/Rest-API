@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+{% block title %}Treatments{% endblock %}
+
+{% block content %}
+<div style="margin-bottom: 30px;"></div>
+<h1 align="center">Treatments Management</h1>
+<div style="margin-bottom: 30px;"></div>
+<div align="center">
+    <button class="button" onclick="toggleTable()">Display All Treatments</button>
+</div>
+<div style="margin-bottom: 30px;"></div>
+<div class="section" id="tableSection" style="display: none;">
+    <table border="1">
+        <thead>
+            <tr>
+                <th>Treatment Name</th>
+                <th>Date Added</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for treatment in treatment %}
+            <tr>
+                <td>{{ treatment.data }}</td>
+                <td>{{ treatment.date }}</td>
+                <td>
+                    <button class="btn btn-primary" onclick="toggleTUpdateForm({{ treatment.id }})">Update</button>
+                    <form method="POST" style="display: inline;">
+                        <input type="hidden" name="action" value="delete_treatment">
+                        <input type="hidden" name="treatment_id" value="{{ treatment.id }}">
+                        <button type="submit" class="btn btn-danger">Delete</button>
+                    </form>
+                </td>
+            </tr>
+            <tr id="updateFormRow{{ treatment.id }}" style="display: none;">
+                <td colspan="4">
+                    <form method="POST">
+                        <input type="hidden" name="action" value="update_treatment">
+                        <input type="hidden" name="treatment_id" value="{{ treatment.id }}">
+                        <div class="form-group">
+                            <label for="newTreatment{{ treatment.id }}">New Treatment Name</label>
+                            <input type="text" class="form-control" id="newTreatment{{ treatment.id }}" name="newTreatment" placeholder="Enter new treatment name" />
+                        </div>
+                        <button type="submit" class="btn btn-primary">Update</button>
+                        <button type="button" class="btn btn-secondary" onclick="toggleTUpdateForm({{ treatment.id }})">Cancel</button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+<div style="margin-bottom: 30px;"></div>
+<div align="center">
+    <button class="button" onclick="toggleForm()">Add Treatment</button>
+</div>
+<div style="margin-bottom: 30px;"></div>
+<div class="section" id="addFormSection" style="display: none;">
+    <form method="POST">
+        <input type="hidden" name="action" value="add_treatment">
+        <div class="form-group">
+            <label for="treatment">Treatment</label>
+            <input type="text" class="form-control" id="treatment" name="treatment" placeholder="Enter treatment" />
+        </div>
+        <br />
+        <div align="center">
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </div>
+    </form>
+</div>
+{% endblock %}
